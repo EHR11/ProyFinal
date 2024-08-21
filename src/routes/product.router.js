@@ -5,11 +5,18 @@ import { Router } from 'express';
 const router = new Router();
 
 router.get('/', async(req,res)=>{
-    let limit=parseInt(req.query.limit)||999;
-    let page=parseInt(req.query.page)||1;
-    let query=req.query.query? JSON.parse(req.query.query):null;
-    let sort=req.query.sort? JSON.parse(req.query.sort):{price:1};
-    let result = await productController.getProducts(limit, page, query, sort)
+    const limit=parseInt(req.query.limit)||999;
+    const page=parseInt(req.query.page)||1;
+    const query=req.query.query?req.query.query.split(","):null
+    const queryObj=query?{
+        category:query[0],
+        status:query[1]
+    }:null
+    const sort=req.query.sort.split(",")
+    const sortObj={}
+    sortObj[sort[0]]=parseInt(sort[1])
+    console.log(limit, page, queryObj, sortObj);
+    let result = await productController.getProducts(limit, page, queryObj, sortObj)
     return res.json(result)
 });
 
@@ -27,18 +34,17 @@ router.post('/', async(req,res)=>{
     return res.json(result)
 });
 
-router.put('/:uid', async(req,res)=>{
-    let uid=req.params.uid
-    let userToReplace = req.body
-    if (!userToReplace.name || !userToReplace.lastName || !userToReplace.email)
-        res.send({status:"error",error:"Missing Parameter(s)"})
-    let result = await userModel.updateOne({_id:uid}, userToReplace)
-        res.send({status:"success",payload:result})
+router.put('/:pid', async(req,res)=>{
+    console.log(req.body);
+    let {title,description,code,price,status,stock,category,thumbnails} = req.body
+    let result= await productController.updateProduct(title,description,code,price,status,stock,category,thumbnails)
+    console.log(result);
+    return res.json(result)
 });
 
-router.delete('/:uid', async(req,res)=>{
-    let uid=req.params.uid
-    let result = await userModel.deleteOne({_id:uid})
+router.delete('/:pid', async(req,res)=>{
+    let pid=req.params.pid
+    let result = await productController.deleteProduct(pid)
         res.send({status:"success",payload:result})
 });
 

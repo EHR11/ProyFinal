@@ -2,8 +2,8 @@ import productModel from "../models/product.model.js";
 
 
 export default class productController{
-static async getProducts(limit, page, query=null, sort={price:1}) {
-    
+static async getProducts(limit, page, query, sort) {
+    console.log({limit,page,query,sort})
     let parsedQuery = {};
     if (query) {
         parsedQuery = {
@@ -14,18 +14,15 @@ static async getProducts(limit, page, query=null, sort={price:1}) {
         };
     }
 
-    console.log(parsedQuery);
+    console.log(sort);
 
     const pquant = await productModel.countDocuments(parsedQuery);
-    console.log(pquant);
     let pages= await Math.ceil(pquant/limit)
-    console.log(pages);
     let hasPrevPage = page>1
     let hasNextPage = page<pages
     let prevPage= hasPrevPage? page-1:null
     let nextPage= hasNextPage? page+1:null
-    let strSort = JSON.stringify(sort)
-    let strQuery = JSON.stringify(query)
+    let queryStr= query?`&query${query.category},${query.status}`:""
     let products= await productModel.find(parsedQuery).sort(sort).skip((page-1)*limit).limit(limit).lean()
     let rspObj={
         "status": products ? "success":"error",
@@ -36,15 +33,15 @@ static async getProducts(limit, page, query=null, sort={price:1}) {
         "page": page,
         "hasPrevPage": hasPrevPage,
         "hasNextPage": hasNextPage,
-        "prevLink": hasPrevPage? `/products?limit=${limit}&page=${hasPrevPage ? prevPage : ""}&sort=${strSort}&query=${strQuery}`:null,
-        "nextLink": hasNextPage? `/products?limit=${limit}&page=${hasNextPage ? nextPage : ""}&sort=${strSort}&query=${strQuery}`:null
+        "prevLink": hasPrevPage? `/products/?limit=${limit}&page=${hasPrevPage ? prevPage : ""}&sort=${Object.keys(sort)[0]},${Object.values(sort)[0]}${queryStr}`:null,
+        "nextLink": hasNextPage? `/products/?limit=${limit}&page=${hasNextPage ? nextPage : ""}&sort=${Object.keys(sort)[0]},${Object.values(sort)[0]}${queryStr}`:null
     }
+    console.log(rspObj);
     return rspObj
 }
 
 static async getSingleProduct(pid) {
     let product= await productModel.findOne({_id:pid})
-    console.log(product);
     return product
 }
 

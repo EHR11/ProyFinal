@@ -14,18 +14,18 @@ router.get('/:cid', async(req,res)=>{
 
 router.post('/', async(req,res)=>{
     let products=req.body
+    console.log(products);
     let result= await cartController.createCart(products)
     console.log(result);
     return res.json({status:"success", payload:result})
 });
 
 router.put('/:cid', async(req,res)=>{
-    console.log(req.body);
     let cid=req.params.cid;
-    let {product, quantity=1} = req.body
+    let {pid, quantity=1} = req.body
     let result={}
-    if (productController.getSingleProduct(pid).length>0)
-        result= await cartController.updateCart(cid, product, quantity)
+    if (productController.getSingleProduct(pid))
+        result= await cartController.updateCart(cid, pid, quantity)
     else
         return res.json({status:"error: product not found"})
     console.log(result);

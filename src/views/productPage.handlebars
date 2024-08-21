@@ -1,0 +1,33 @@
+    <a class="float-right" style="margin-right:1rem" href='javascript:void(0);' onclick='showCart()'>
+        🛒
+        <b class=".bg-info" id="itemsInCart"></b>
+    </a>
+    <div id="carContainer" style="max-width:18rem">
+    <div id="carrusel" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        {{#each thumbnails}}"
+        <div class="carousel-item {{#if @first}}active{{/if}}">
+        <img class="d-block w-100" src={{this}} alt="Imagen {{@index}}">
+        </div>
+        {{/each}}
+    </div>
+    <a class="carousel-control-prev" href="#carrusel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carrusel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+    </div>
+</div>
+<h5 class="title">{{title}}</h5>
+<p class="subtitle">{{price}}</p>
+<p>{{description}}</p>
+<p><b>Category:</b> {{category}}</p>
+
+<a 'javascript:void(0);' onclick='addToCart("{{_id}}")' class="btn btn-primary">Add to Cart</a>
+<script>
+    const cart="{{{cart}}}"  
+</script>
+<script src="../js/index.js" type="text/javascript"></script>

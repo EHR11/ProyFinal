@@ -1,0 +1,17 @@
+<div>
+    <table>
+        {{#each cartToShow.productsInCart}}
+        <tr>
+            <td>
+                {{_id.title}}
+            </td>
+            <td>
+                {{_id.price}}
+            </td>
+            <td>
+                {{quantity}}
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+</div>
